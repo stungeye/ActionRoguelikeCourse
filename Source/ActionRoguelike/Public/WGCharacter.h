@@ -11,6 +11,9 @@
 // file instead.
 class USpringArmComponent;
 class UCameraComponent;
+class UInputAction;
+class UInputMappingContext;
+struct FInputActionValue;
 
 UCLASS()
 class ACTIONROGUELIKE_API AWGCharacter : public ACharacter
@@ -28,6 +31,14 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputMappingContext* InputMappingContext;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* MoveForwardAction;
+
+	void MoveForward(const FInputActionValue& Value);
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

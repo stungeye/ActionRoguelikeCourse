@@ -7,6 +7,12 @@
 // we need the #includes here.
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "InputActionValue.h"
+
+using UEILPS = UEnhancedInputLocalPlayerSubsystem;
+using UEIC = UEnhancedInputComponent;
 
 // Sets default values
 AWGCharacter::AWGCharacter()
@@ -24,7 +30,12 @@ AWGCharacter::AWGCharacter()
 void AWGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (const APlayerController* PlayerController = Cast<APlayerController>(GetController())) {
+		const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+		if (UEILPS* SubSystem = ULocalPlayer::GetSubsystem<UEILPS>(LocalPlayer)) {
+			SubSystem->AddMappingContext(InputMappingContext, 0);
+		}
+	}
 }
 
 // Called every frame
@@ -38,6 +49,12 @@ void AWGCharacter::Tick(float DeltaTime)
 void AWGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	if (UEIC* EnhancedInputComponent = CastChecked<UEIC>(PlayerInputComponent)) {
+		EnhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this,
+										   &AWGCharacter::MoveForward);
+	}
 }
 
+void AWGCharacter::MoveForward(const FInputActionValue& Value) {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Input: %f"), Value.Get<float>()));
+}
