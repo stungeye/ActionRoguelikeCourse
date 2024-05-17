@@ -52,9 +52,17 @@ void AWGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (UEIC* EnhancedInputComponent = CastChecked<UEIC>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this,
 										   &AWGCharacter::MoveForward);
+		EnhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this,
+										   &AWGCharacter::Rotate);
 	}
 }
 
 void AWGCharacter::MoveForward(const FInputActionValue& Value) {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Input: %f"), Value.Get<float>()));
+	AddMovementInput(GetActorForwardVector(), Value.Get<float>());
+}
+
+void AWGCharacter::Rotate(const FInputActionValue& Value) {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Blue, FString::Printf(TEXT("Input: %f"), Value.Get<float>()));
+	AddControllerYawInput(Value.Get<float>());
 }
