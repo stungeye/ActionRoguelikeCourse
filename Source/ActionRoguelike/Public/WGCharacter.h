@@ -40,9 +40,17 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* MoveRightAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* TurnAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* LookUpAction;
 
 	void MoveForward(const FInputActionValue& Value);
-	void Rotate(const FInputActionValue& Value);
+	void MoveRight(const FInputActionValue& Value);
+	void Turn(const FInputActionValue& Value);
+	void LookUp(const FInputActionValue& Value);
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

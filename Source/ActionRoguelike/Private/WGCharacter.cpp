@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 using UEILPS = UEnhancedInputLocalPlayerSubsystem;
 using UEIC = UEnhancedInputComponent;
@@ -21,9 +22,15 @@ AWGCharacter::AWGCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(RootComponent);
+	// Control the spring arm rotation from the controller.
+	SpringArmComponent->bUsePawnControlRotation = true; 
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	// Don't rotate our character via the controller (spring arm rotation only).
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned
@@ -53,16 +60,37 @@ void AWGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this,
 										   &AWGCharacter::MoveForward);
 		EnhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this,
-										   &AWGCharacter::Rotate);
+										   &AWGCharacter::MoveRight);
+		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this,
+										   &AWGCharacter::Turn);
+		EnhancedInputComponent->BindAction(LookUpAction, ETriggerEvent::Triggered, this,
+										   &AWGCharacter::LookUp);
 	}
 }
 
 void AWGCharacter::MoveForward(const FInputActionValue& Value) {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Input: %f"), Value.Get<float>()));
-	AddMovementInput(GetActorForwardVector(), Value.Get<float>());
+//	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Input: %f"), Value.Get<float>()));
+	FRotator ControllerRotation = GetControlRotation();
+	ControllerRotation.Pitch = 0.0f;
+	ControllerRotation.Roll = 0.0f;
+	AddMovementInput(ControllerRotation.Vector(), Value.Get<float>());
 }
 
-void AWGCharacter::Rotate(const FInputActionValue& Value) {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Blue, FString::Printf(TEXT("Input: %f"), Value.Get<float>()));
+void AWGCharacter::MoveRight(const FInputActionValue& Value) {
+	FRotator ControllerRotation = GetControlRotation();
+	ControllerRotation.Pitch = 0.0f;
+	ControllerRotation.Roll = 0.0f;
+
+	// Note that X: Forward (Red), Y: Right (Green), Z: Up (Blue)
+	// Sneak a peek at the Kismet library's GetRightVector function and find:
+	AddMovementInput(FRotationMatrix(ControllerRotation).GetScaledAxis(EAxis::Y), Value.Get<float>());
+}
+
+void AWGCharacter::Turn(const FInputActionValue& Value) {
 	AddControllerYawInput(Value.Get<float>());
 }
+
+void AWGCharacter::LookUp(const FInputActionValue& Value) {
+	AddControllerPitchInput(Value.Get<float>());
+}
+
