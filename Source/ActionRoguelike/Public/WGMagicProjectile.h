@@ -6,6 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "WGMagicProjectile.generated.h"
 
+// Forward declares:
+class USphereComponent;
+class UProjectileMovementComponent;
+class UParticleSystemComponent;
+
 UCLASS()
 class ACTIONROGUELIKE_API AWGMagicProjectile : public AActor
 {
@@ -16,6 +21,15 @@ public:
 	AWGMagicProjectile();
 
 protected:
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* SphereComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UProjectileMovementComponent* MovementComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* EffectComponent;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
