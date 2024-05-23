@@ -65,6 +65,8 @@ void AWGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 										   &AWGCharacter::Turn);
 		EnhancedInputComponent->BindAction(LookUpAction, ETriggerEvent::Triggered, this,
 										   &AWGCharacter::LookUp);
+		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this,
+											&AWGCharacter::PrimaryAttack);
 	}
 }
 
@@ -92,5 +94,9 @@ void AWGCharacter::Turn(const FInputActionValue& Value) {
 
 void AWGCharacter::LookUp(const FInputActionValue& Value) {
 	AddControllerPitchInput(Value.Get<float>());
+}
+
+void AWGCharacter::PrimaryAttack() {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Primary Attack!")));
 }
 
