@@ -23,7 +23,7 @@ AWGCharacter::AWGCharacter()
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(RootComponent);
 	// Control the spring arm rotation from the controller.
-	SpringArmComponent->bUsePawnControlRotation = true; 
+	SpringArmComponent->bUsePawnControlRotation = true;
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
@@ -72,14 +72,14 @@ void AWGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AWGCharacter::MoveForward(const FInputActionValue& Value) {
 //	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Input: %f"), Value.Get<float>()));
-	FRotator ControllerRotation = GetControlRotation();
+	FRotator ControllerRotation{ GetControlRotation() };
 	ControllerRotation.Pitch = 0.0f;
 	ControllerRotation.Roll = 0.0f;
 	AddMovementInput(ControllerRotation.Vector(), Value.Get<float>());
 }
 
 void AWGCharacter::MoveRight(const FInputActionValue& Value) {
-	FRotator ControllerRotation = GetControlRotation();
+	FRotator ControllerRotation{ GetControlRotation() };
 	ControllerRotation.Pitch = 0.0f;
 	ControllerRotation.Roll = 0.0f;
 
@@ -98,5 +98,14 @@ void AWGCharacter::LookUp(const FInputActionValue& Value) {
 
 void AWGCharacter::PrimaryAttack() {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Primary Attack!")));
+	FVector HandLocation{ GetMesh()->GetSocketLocation("Muzzle_01") };
+	FTransform SpawnTransform{ GetControlRotation(), HandLocation };
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	if (ProjectileClass) {
+		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+	} else {
+		// Log warning here.
+	}
 }
 
