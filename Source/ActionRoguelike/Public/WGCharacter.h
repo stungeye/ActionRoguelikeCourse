@@ -20,7 +20,7 @@ class ACTIONROGUELIKE_API AWGCharacter : public ACharacter
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Projectile)
 	TSubclassOf<AActor> ProjectileClass;
 
 public:
@@ -52,12 +52,16 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* PrimaryAttackAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* JumpAction;
 
 	void MoveForward(const FInputActionValue& Value);
 	void MoveRight(const FInputActionValue& Value);
 	void Turn(const FInputActionValue& Value);
 	void LookUp(const FInputActionValue& Value);
 	void PrimaryAttack();
+	void PerformJump();
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

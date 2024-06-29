@@ -67,6 +67,8 @@ void AWGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 										   &AWGCharacter::LookUp);
 		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this,
 											&AWGCharacter::PrimaryAttack);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
+											&AWGCharacter::PerformJump);
 	}
 }
 
@@ -107,5 +109,10 @@ void AWGCharacter::PrimaryAttack() {
 	} else {
 		// Log warning here.
 	}
+}
+
+void AWGCharacter::PerformJump() {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Jump!")));
+	Jump();
 }
 
