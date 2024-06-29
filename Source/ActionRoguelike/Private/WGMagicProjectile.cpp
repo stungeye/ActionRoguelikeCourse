@@ -25,13 +25,13 @@ AWGMagicProjectile::AWGMagicProjectile()
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
 	MovementComponent->ProjectileGravityScale = 0;
+
 }
 
 // Called when the game starts or when spawned
 void AWGMagicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
