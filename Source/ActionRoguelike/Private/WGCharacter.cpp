@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "WGInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 using UEILPS = UEnhancedInputLocalPlayerSubsystem;
@@ -27,6 +28,8 @@ AWGCharacter::AWGCharacter()
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	InteractionComponent = CreateDefaultSubobject<UWGInteractionComponent>("InteractionComponent");
 
 	// Don't rotate our character via the controller (spring arm rotation only).
 	bUseControllerRotationYaw = false;
@@ -69,6 +72,8 @@ void AWGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 											&AWGCharacter::PrimaryAttack);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
 											&AWGCharacter::PerformJump);
+		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this,
+											&AWGCharacter::PrimaryInteract);
 	}
 }
 
@@ -114,5 +119,10 @@ void AWGCharacter::PrimaryAttack() {
 void AWGCharacter::PerformJump() {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Jump!")));
 	Jump();
+}
+
+void AWGCharacter::PrimaryInteract() {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Interact!")));
+	InteractionComponent->PrimaryInteract();
 }
 

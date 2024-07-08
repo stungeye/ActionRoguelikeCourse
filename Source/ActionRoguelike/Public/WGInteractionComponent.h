@@ -15,6 +15,7 @@ class ACTIONROGUELIKE_API UWGInteractionComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UWGInteractionComponent();
+	void PrimaryInteract();
 
 protected:
 	// Called when the game starts

@@ -4,6 +4,7 @@
 #include "WGItemChest.h"
 
 void AWGItemChest::Interact_Implementation(APawn* InstigatorPawn) {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow, FString::Printf(TEXT("Open Chest")));
 	LidMesh->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
 }
 
